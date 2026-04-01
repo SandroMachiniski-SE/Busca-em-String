@@ -315,3 +315,33 @@ class BoyerMooreSearch(SearchStrategy):
             'bad_char_table': bad_char,
             'steps': steps if step_by_step else []
         }
+
+
+class SearchComparator:
+    """Comparador/unificador de estratégias de busca"""
+
+    def __init__(self):
+        self.algorithms = [
+            NaiveSearch(),
+            RabinKarpSearch(),
+            KMPSearch(),
+            BoyerMooreSearch()
+        ]
+
+    def search_all(self, text: str, pattern: str, step_by_step: bool = False):
+        results = []
+        for alg in self.algorithms:
+            results.append(alg.search(text, pattern, step_by_step))
+        return results
+
+    def compare_performance(self, results):
+        if not results:
+            return {'fastest': None, 'least_comparisons': None}
+
+        fastest = min(results, key=lambda x: x.get('time_ms', float('inf')))
+        least = min(results, key=lambda x: x.get('comparisons', float('inf')))
+
+        return {
+            'fastest': fastest,
+            'least_comparisons': least
+        }
